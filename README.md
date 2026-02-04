@@ -16,9 +16,10 @@ Then open `http://localhost:8080` in a browser.
 ### Quick start (hosted via GitHub Pages)
 
 1. Push this repo to GitHub.
-2. In GitHub, go to **Settings → Pages** and set **Source** to **GitHub Actions**.
-3. Commit the workflow in `.github/workflows/pages.yml` (included in this repo).
-4. After the workflow completes, open the URL shown in the Pages settings (it will look like
+2. Make sure the repo is **public** (Pages requires public repos unless you have GitHub Enterprise).
+3. In GitHub, go to **Settings → Pages** and set **Source** to **GitHub Actions**.
+4. If prompted, approve the workflow run in the **Actions** tab.
+5. After the workflow completes, open the URL shown in the Pages settings (it will look like
    `https://<org>.github.io/<repo>/`).
 
 ### Data sources
