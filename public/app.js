@@ -1,4 +1,4 @@
-const offeringsUrl = "../data/mathco_offerings.json";
+const offeringsUrl = "./data/mathco_offerings.json";
 
 const leadNameInput = document.querySelector("#leadName");
 const linkedInInput = document.querySelector("#leadLinkedIn");
