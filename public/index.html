@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lead Intel & Outreach Builder</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div>
+          <p class="eyebrow">MathCo Sales Enablement</p>
+          <h1>Lead Intel & Outreach Builder</h1>
+          <p class="subtitle">
+            Turn a LinkedIn profile into a tailored pitch, email, and LinkedIn message in minutes.
+          </p>
+        </div>
+        <div class="badge">Agent mode ready</div>
+      </header>
+
+      <main>
+        <section class="panel">
+          <h2>1. Lead input</h2>
+          <div class="grid two">
+            <label>
+              Full name
+              <input id="leadName" placeholder="Alex Johnson" />
+            </label>
+            <label>
+              LinkedIn URL
+              <input id="leadLinkedIn" placeholder="https://www.linkedin.com/in/username" />
+            </label>
+          </div>
+          <div class="grid two">
+            <label>
+              Enrichment API key (optional)
+              <input id="enrichApiKey" type="password" placeholder="Paste API key for URL-based pull" />
+            </label>
+            <label>
+              Enrichment provider
+              <select id="enrichProvider">
+                <option value="proxycurl">Proxycurl (LinkedIn profile API)</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            LinkedIn profile content (paste the profile summary, experience, and skills)
+            <textarea id="profileText" rows="8" placeholder="Paste profile text here..."></textarea>
+          </label>
+          <div class="actions">
+            <button id="agentScrape" class="secondary">Simulate agent scrape</button>
+            <button id="pullFromUrl" class="secondary">Pull profile from LinkedIn URL</button>
+            <button id="generate" class="primary">Generate intel & outreach</button>
+          </div>
+          <p class="hint">
+            Use URL pull with an enrichment API key for direct profile retrieval. If unavailable, use simulated
+            agent scrape or paste profile text manually.
+          </p>
+          <p id="status" class="status" aria-live="polite"></p>
+        </section>
+
+        <section class="panel">
+          <h2>2. MathCo context & meeting intent</h2>
+          <div class="grid two">
+            <label>
+              Meeting goal
+              <input id="meetingGoal" placeholder="Secure a 20-minute discovery call" />
+            </label>
+            <label>
+              Target timeline
+              <input id="timeline" placeholder="Within the next 7 days" />
+            </label>
+          </div>
+          <label>
+            @work discussion notes
+            <textarea id="workNotes" rows="6" placeholder="Paste relevant notes from @work..."></textarea>
+          </label>
+        </section>
+
+        <section class="panel" id="outputPanel">
+          <h2>3. Output</h2>
+          <div class="output-grid">
+            <div>
+              <h3>Profile summary</h3>
+              <div id="summary" class="card"></div>
+            </div>
+            <div>
+              <div class="section-header">
+                <h3>Pitch recommendation</h3>
+                <button data-copy-target="pitch" class="copy-btn" type="button">Copy</button>
+              </div>
+              <div id="pitch" class="card"></div>
+            </div>
+          </div>
+          <div class="output-grid">
+            <div>
+              <div class="section-header">
+                <h3>Email draft</h3>
+                <button data-copy-target="email" class="copy-btn" type="button">Copy</button>
+              </div>
+              <div id="email" class="card"></div>
+            </div>
+            <div>
+              <div class="section-header">
+                <h3>LinkedIn message draft</h3>
+                <button data-copy-target="linkedin" class="copy-btn" type="button">Copy</button>
+              </div>
+              <div id="linkedin" class="card"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
