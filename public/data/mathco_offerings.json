@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Revenue Operations Acceleration",
+    "value": "Unify CRM, pipeline analytics, and forecasting to improve conversion rates and rep productivity.",
+    "triggers": ["revenue", "revops", "sales", "pipeline", "forecasting", "crm", "gtm"]
+  },
+  {
+    "name": "AI-Powered Decision Intelligence",
+    "value": "Deploy AI models and automated insights to prioritize accounts, reduce churn, and uncover growth levers.",
+    "triggers": ["ai", "analytics", "insights", "machine", "model", "automation"]
+  },
+  {
+    "name": "Data Modernization",
+    "value": "Modernize data stacks to deliver trusted, real-time reporting for cross-functional leaders.",
+    "triggers": ["data", "warehouse", "cloud", "governance", "reporting", "modernization"]
+  },
+  {
+    "name": "Customer Growth Programs",
+    "value": "Drive retention and expansion with segmentation, journey analytics, and personalized outreach strategies.",
+    "triggers": ["customer", "retention", "growth", "journey", "segmentation"]
+  }
+]
