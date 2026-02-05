@@ -2,8 +2,6 @@ const offeringsUrl = "./data/mathco_offerings.json";
 
 const leadNameInput = document.querySelector("#leadName");
 const linkedInInput = document.querySelector("#leadLinkedIn");
-const enrichApiKeyInput = document.querySelector("#enrichApiKey");
-const enrichProviderInput = document.querySelector("#enrichProvider");
 const profileTextInput = document.querySelector("#profileText");
 const workNotesInput = document.querySelector("#workNotes");
 const meetingGoalInput = document.querySelector("#meetingGoal");
@@ -25,7 +23,6 @@ Education: MBA, University of Chicago
 Interests: Building high-performing sales teams, AI for productivity`;
 
 const agentScrapeButton = document.querySelector("#agentScrape");
-const pullFromUrlButton = document.querySelector("#pullFromUrl");
 const generateButton = document.querySelector("#generate");
 
 const setStatus = (message, variant = "") => {
@@ -47,61 +44,6 @@ const cleanLines = (text) =>
     .split("\n")
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
-
-const formatProfileFromEnrichment = (profile) => {
-  const experiences = (profile.experiences || [])
-    .slice(0, 4)
-    .map((experience) => {
-      const title = experience.title || "Role";
-      const company = experience.company || "Company";
-      return `- ${title} at ${company}`;
-    })
-    .join("\n");
-
-  const skills = Array.isArray(profile.skills)
-    ? profile.skills.slice(0, 12).join(", ")
-    : "";
-
-  const education = (profile.education || [])
-    .slice(0, 2)
-    .map((item) => item.degree_name || item.school || "")
-    .filter(Boolean)
-    .join(", ");
-
-  return [
-    `${profile.full_name || "Unknown"} - ${profile.occupation || "LinkedIn profile"}`,
-    profile.summary || "",
-    "Experience:",
-    experiences || "- Experience not available",
-    `Skills: ${skills || "Not available"}`,
-    `Education: ${education || "Not available"}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
-};
-
-const pullLinkedInProfile = async (linkedInUrl, apiKey, provider) => {
-  if (provider !== "proxycurl") {
-    throw new Error("Selected enrichment provider is not supported yet.");
-  }
-
-  const endpoint = `https://nubela.co/proxycurl/api/v2/linkedin?url=${encodeURIComponent(
-    linkedInUrl
-  )}&skills=include&fallback_to_cache=on-error`;
-
-  const response = await fetch(endpoint, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("LinkedIn URL pull failed. Check API key, plan limits, or URL visibility.");
-  }
-
-  return response.json();
-};
 
 const extractKeywords = (text) => {
   const keywords = new Set();
@@ -227,22 +169,6 @@ const validateInput = (linkedInUrl, profileText) => {
   return "";
 };
 
-const validateUrlPullInput = (linkedInUrl, apiKey) => {
-  if (!linkedInUrl) {
-    return "Add a LinkedIn URL before pulling profile data.";
-  }
-
-  if (!/^https?:\/\/(www\.)?linkedin\.com\/in\//i.test(linkedInUrl)) {
-    return "Please provide a valid LinkedIn profile URL (linkedin.com/in/...).";
-  }
-
-  if (!apiKey) {
-    return "Add your enrichment API key to pull profile data from URL.";
-  }
-
-  return "";
-};
-
 const renderOutput = (summary, pitch, email, linkedin) => {
   summaryEl.textContent = summary;
   pitchEl.textContent = pitch;
@@ -299,37 +225,6 @@ const handleGenerate = async () => {
 
 generateButton.addEventListener("click", () => {
   handleGenerate();
-});
-
-pullFromUrlButton.addEventListener("click", async () => {
-  const linkedInUrl = linkedInInput.value.trim();
-  const apiKey = enrichApiKeyInput.value.trim();
-  const provider = enrichProviderInput.value;
-
-  const validationError = validateUrlPullInput(linkedInUrl, apiKey);
-  if (validationError) {
-    setStatus(validationError, "error");
-    return;
-  }
-
-  pullFromUrlButton.disabled = true;
-  pullFromUrlButton.textContent = "Pulling profile...";
-
-  try {
-    setStatus("Pulling profile from LinkedIn URL...", "");
-    const profile = await pullLinkedInProfile(linkedInUrl, apiKey, provider);
-    const formattedProfile = formatProfileFromEnrichment(profile);
-    profileTextInput.value = formattedProfile;
-    if (!leadNameInput.value.trim() && profile.full_name) {
-      leadNameInput.value = profile.full_name;
-    }
-    setStatus("Profile loaded from URL. Now click ‘Generate intel & outreach’.", "success");
-  } catch (error) {
-    setStatus(error.message || "Could not pull profile from LinkedIn URL.", "error");
-  } finally {
-    pullFromUrlButton.disabled = false;
-    pullFromUrlButton.textContent = "Pull profile from LinkedIn URL";
-  }
 });
 
 copyButtons.forEach((button) => {

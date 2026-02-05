@@ -32,30 +32,17 @@
               <input id="leadLinkedIn" placeholder="https://www.linkedin.com/in/username" />
             </label>
           </div>
-          <div class="grid two">
-            <label>
-              Enrichment API key (optional)
-              <input id="enrichApiKey" type="password" placeholder="Paste API key for URL-based pull" />
-            </label>
-            <label>
-              Enrichment provider
-              <select id="enrichProvider">
-                <option value="proxycurl">Proxycurl (LinkedIn profile API)</option>
-              </select>
-            </label>
-          </div>
           <label>
             LinkedIn profile content (paste the profile summary, experience, and skills)
             <textarea id="profileText" rows="8" placeholder="Paste profile text here..."></textarea>
           </label>
           <div class="actions">
             <button id="agentScrape" class="secondary">Simulate agent scrape</button>
-            <button id="pullFromUrl" class="secondary">Pull profile from LinkedIn URL</button>
             <button id="generate" class="primary">Generate intel & outreach</button>
           </div>
           <p class="hint">
-            Use URL pull with an enrichment API key for direct profile retrieval. If unavailable, use simulated
-            agent scrape or paste profile text manually.
+            Agent mode is represented here as a guided scrape step. Paste the exported profile text if direct
+            scraping is blocked by LinkedIn access policies.
           </p>
           <p id="status" class="status" aria-live="polite"></p>
         </section>
