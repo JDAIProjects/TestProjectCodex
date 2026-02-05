@@ -6,11 +6,13 @@ const profileTextInput = document.querySelector("#profileText");
 const workNotesInput = document.querySelector("#workNotes");
 const meetingGoalInput = document.querySelector("#meetingGoal");
 const timelineInput = document.querySelector("#timeline");
+const statusEl = document.querySelector("#status");
 
 const summaryEl = document.querySelector("#summary");
 const pitchEl = document.querySelector("#pitch");
 const emailEl = document.querySelector("#email");
 const linkedinEl = document.querySelector("#linkedin");
+const copyButtons = document.querySelectorAll("[data-copy-target]");
 
 const sampleProfile = `Senior Director of Revenue Operations at ExampleCorp
 Experience:
@@ -23,9 +25,17 @@ Interests: Building high-performing sales teams, AI for productivity`;
 const agentScrapeButton = document.querySelector("#agentScrape");
 const generateButton = document.querySelector("#generate");
 
+const setStatus = (message, variant = "") => {
+  statusEl.textContent = message;
+  statusEl.className = variant ? `status ${variant}` : "status";
+};
+
 agentScrapeButton.addEventListener("click", () => {
   if (profileTextInput.value.trim().length === 0) {
     profileTextInput.value = sampleProfile;
+    setStatus("Sample profile added. Click ‘Generate intel & outreach’.", "success");
+  } else {
+    setStatus("Profile content already present. Ready to generate.");
   }
 });
 
@@ -52,6 +62,22 @@ const extractKeywords = (text) => {
     .filter((token) => token.length > 3);
 
   tokens.forEach((token) => keywords.add(token.toLowerCase()));
+
+  const phraseMatches = [
+    "revenue operations",
+    "sales analytics",
+    "pipeline optimization",
+    "gtm strategy",
+    "data warehousing",
+    "ai enablement",
+  ];
+
+  phraseMatches.forEach((phrase) => {
+    if (text.toLowerCase().includes(phrase)) {
+      keywords.add(phrase);
+    }
+  });
+
   return Array.from(keywords);
 };
 
@@ -73,8 +99,10 @@ const summarizeProfile = (profileText) => {
 };
 
 const buildPitch = (keywords, offerings, workNotes, meetingGoal, timeline) => {
+  const normalizedKeywordSet = new Set(keywords.map((keyword) => keyword.toLowerCase()));
+
   const relevantOfferings = offerings.filter((offering) =>
-    offering.triggers.some((trigger) => keywords.includes(trigger))
+    offering.triggers.some((trigger) => normalizedKeywordSet.has(trigger.toLowerCase()))
   );
 
   const selectedOfferings = relevantOfferings.length
@@ -125,6 +153,22 @@ const generateLinkedInMessage = (leadName, pitch, meetingGoal) => {
   ].join("\n");
 };
 
+const validateInput = (linkedInUrl, profileText) => {
+  if (!profileText) {
+    return "Paste a LinkedIn profile to generate outputs.";
+  }
+
+  if (linkedInUrl && !/^https?:\/\/(www\.)?linkedin\.com\/in\//i.test(linkedInUrl)) {
+    return "Please provide a valid LinkedIn profile URL (linkedin.com/in/...).";
+  }
+
+  if (profileText.length < 60) {
+    return "Please paste a richer profile snippet (headline + experience + skills).";
+  }
+
+  return "";
+};
+
 const renderOutput = (summary, pitch, email, linkedin) => {
   summaryEl.textContent = summary;
   pitchEl.textContent = pitch;
@@ -134,17 +178,23 @@ const renderOutput = (summary, pitch, email, linkedin) => {
 
 const loadOfferings = async () => {
   const response = await fetch(offeringsUrl);
+  if (!response.ok) {
+    throw new Error("Could not load offerings data.");
+  }
   return response.json();
 };
 
 const handleGenerate = async () => {
   const leadName = leadNameInput.value.trim() || "there";
+  const linkedInUrl = linkedInInput.value.trim();
   const profileText = profileTextInput.value.trim();
   const workNotes = workNotesInput.value.trim();
   const meetingGoal = meetingGoalInput.value.trim();
   const timeline = timelineInput.value.trim();
 
-  if (profileText.length === 0) {
+  const validationError = validateInput(linkedInUrl, profileText);
+  if (validationError) {
+    setStatus(validationError, "error");
     renderOutput(
       "Paste a LinkedIn profile to generate the summary.",
       "Add profile details to generate a pitch.",
@@ -154,16 +204,45 @@ const handleGenerate = async () => {
     return;
   }
 
-  const offerings = await loadOfferings();
-  const keywords = extractKeywords(profileText);
-  const summary = summarizeProfile(profileText);
-  const pitch = buildPitch(keywords, offerings, workNotes, meetingGoal, timeline);
-  const email = generateEmail(leadName, summary, pitch, meetingGoal, timeline);
-  const linkedin = generateLinkedInMessage(leadName, pitch, meetingGoal);
+  try {
+    setStatus("Generating outreach drafts...", "");
+    const offerings = await loadOfferings();
+    const keywords = extractKeywords(profileText);
+    const summaryBase = summarizeProfile(profileText);
+    const summary = linkedInUrl
+      ? `${summaryBase}\nLinkedIn: ${linkedInUrl}`
+      : summaryBase;
+    const pitch = buildPitch(keywords, offerings, workNotes, meetingGoal, timeline);
+    const email = generateEmail(leadName, summary, pitch, meetingGoal, timeline);
+    const linkedin = generateLinkedInMessage(leadName, pitch, meetingGoal);
 
-  renderOutput(summary, pitch, email, linkedin);
+    renderOutput(summary, pitch, email, linkedin);
+    setStatus("Done. Review and copy your outreach drafts.", "success");
+  } catch (error) {
+    setStatus(error.message || "Something went wrong while generating outputs.", "error");
+  }
 };
 
 generateButton.addEventListener("click", () => {
   handleGenerate();
+});
+
+copyButtons.forEach((button) => {
+  button.addEventListener("click", async () => {
+    const target = button.dataset.copyTarget;
+    const targetNode = document.querySelector(`#${target}`);
+    const content = targetNode?.textContent?.trim();
+
+    if (!content) {
+      setStatus(`Nothing to copy from ${target} yet.`, "error");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(content);
+      setStatus(`${target} copied to clipboard.`, "success");
+    } catch (_error) {
+      setStatus("Clipboard write failed. Please copy manually.", "error");
+    }
+  });
 });

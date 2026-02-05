@@ -44,6 +44,7 @@
             Agent mode is represented here as a guided scrape step. Paste the exported profile text if direct
             scraping is blocked by LinkedIn access policies.
           </p>
+          <p id="status" class="status" aria-live="polite"></p>
         </section>
 
         <section class="panel">
@@ -72,17 +73,26 @@
               <div id="summary" class="card"></div>
             </div>
             <div>
-              <h3>Pitch recommendation</h3>
+              <div class="section-header">
+                <h3>Pitch recommendation</h3>
+                <button data-copy-target="pitch" class="copy-btn" type="button">Copy</button>
+              </div>
               <div id="pitch" class="card"></div>
             </div>
           </div>
           <div class="output-grid">
             <div>
-              <h3>Email draft</h3>
+              <div class="section-header">
+                <h3>Email draft</h3>
+                <button data-copy-target="email" class="copy-btn" type="button">Copy</button>
+              </div>
               <div id="email" class="card"></div>
             </div>
             <div>
-              <h3>LinkedIn message draft</h3>
+              <div class="section-header">
+                <h3>LinkedIn message draft</h3>
+                <button data-copy-target="linkedin" class="copy-btn" type="button">Copy</button>
+              </div>
               <div id="linkedin" class="card"></div>
             </div>
           </div>

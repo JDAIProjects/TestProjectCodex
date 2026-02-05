@@ -139,6 +139,21 @@ button:active {
   font-size: 13px;
 }
 
+.status {
+  margin: 0;
+  min-height: 20px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.status.error {
+  color: #b91c1c;
+}
+
+.status.success {
+  color: #166534;
+}
+
 .output-grid {
   display: grid;
   gap: 16px;
@@ -157,6 +172,25 @@ button:active {
 .card ul {
   padding-left: 18px;
   margin: 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.section-header h3 {
+  margin: 0;
+}
+
+.copy-btn {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
 }
 
 @media (max-width: 720px) {
